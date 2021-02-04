@@ -49,6 +49,7 @@ namespace AS_Assignment
                     if (userHash.Equals(dbHash))
                     {
                         Session["user"] = userid;
+                        Session["profile_name"] = getProfileName(userid);
 
                         string guid = Guid.NewGuid().ToString();
                         Session["AuthToken"] = guid;
@@ -57,16 +58,16 @@ namespace AS_Assignment
                         // for decrypting credit card no
                         // getCreditCardNo(Session["user"].ToString());
                         lbl_debug.Text = "Login successful";
+                        Response.Redirect("Profile.aspx", false);
                     }
                     else
                     {
-                        lbl_debug.Text = "User not found";
-                        //Response.Redirect("Login.aspx", false);
+                        lbl_debug.Text = "Incorrect username or password";
                     }
                 } 
                 else
                 {
-                    lbl_debug.Text = "User not found";
+                    lbl_debug.Text = "Incorrect username or password";
                 }
             }
             catch (Exception ex)
@@ -180,7 +181,6 @@ namespace AS_Assignment
 
         protected string getDBSalt(string userid)
         {
-
             string s = null;
 
             SqlConnection connection = new SqlConnection(MYDBConnectionString);
@@ -216,7 +216,7 @@ namespace AS_Assignment
             return s;
 
         }
-
+        
         protected string getDBHash(string userid)
         {
 
@@ -255,6 +255,46 @@ namespace AS_Assignment
             finally { connection.Close(); }
             return h;
         }
+
+        protected string getProfileName(string userid)
+        {
+            string name = null;
+
+            SqlConnection connection = new SqlConnection(MYDBConnectionString);
+            string sql = "select firstName, lastName FROM Account WHERE email=@USERID";
+            SqlCommand command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@USERID", userid);
+
+            try
+            {
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        if (reader["firstName"] != null && reader["lastName"] != null)
+                        {
+                            if (reader["firstName"] != DBNull.Value && reader["lastName"] != DBNull.Value)
+                            {
+                                name = reader["firstName"].ToString() + reader["lastName"].ToString();
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+
+            finally { connection.Close(); }
+            return name;
+
+        }
+
         public class MyObject
         {
             public string success { get; set; }

@@ -40,10 +40,10 @@
                 <a class="navbar-brand" href="#">SITConnect</a>
                 <div class="navbar-collapse collapse justify-content-end">
                     <ul class="nav">
-                        <% if (Session["user"] != null)
+                        <% if (Session["profile_name"] != null)
                             { %>
                         <li class="nav-item">
-                            <a class="nav-link" runat="server" href="~/">Hello, <%=Session["user"].ToString() %>
+                            <a class="nav-link" runat="server" href="~/">Hello, <%=Session["profile_name"].ToString() %>
                             </a>
                         </li>
                         <li class="nav-item">

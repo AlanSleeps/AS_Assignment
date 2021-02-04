@@ -85,7 +85,7 @@ namespace AS_Assignment
             {
                 using (SqlConnection con = new SqlConnection(MYDBConnectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Account VALUES(@email,@passwordHash,@passwordSalt,@creditCardNo,@firstName,@lastName,@dateOfBirth,@IV,@Key)"))
+                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Account VALUES(@email,@passwordHash,@passwordSalt,@creditCardNo,@firstName,@lastName,@dateOfBirth,@IV,@Key,CURRENT_TIMESTAMP)"))
                     {
                         using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
@@ -108,7 +108,8 @@ namespace AS_Assignment
                             }
                             catch (Exception ex)
                             {
-                                Response.Redirect("/CustomError/GenericError.html");
+                                throw new Exception(ex.ToString());
+                                // Response.Redirect("/CustomError/GenericError.html");
                             }
                             finally
                             {
